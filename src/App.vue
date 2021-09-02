@@ -1,11 +1,20 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
   <router-view />
+
+  <footer-tab-bar v-show="$route.meta.showTabBar"></footer-tab-bar>
 </template>
 
+<script>
+//引入组件
+
+import FooterTabBar from "@/components/common/tab-bar";
+export default {
+  name: "App",
+  components: {
+    FooterTabBar
+  }
+};
+</script>
 <style lang="less">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
