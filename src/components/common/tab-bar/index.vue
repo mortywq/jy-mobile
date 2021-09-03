@@ -31,7 +31,6 @@ export default {
     watch(
       () => route,
       (newV, oldV) => {
-        console.log(newV.meta);
         if (newV.meta.activaMenu) {
           active.value = newV.meta.activaMenu;
         } else {

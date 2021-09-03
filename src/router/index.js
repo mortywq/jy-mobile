@@ -61,4 +61,12 @@ const router = createRouter({
   routes
 });
 
+export function resetRouter() {
+  const newRouter = createRouter({
+    history: createWebHistory(process.env.BASE_URL),
+    routes
+  });
+  router.matcher = newRouter.matcher; // reset router
+}
+
 export default router;
