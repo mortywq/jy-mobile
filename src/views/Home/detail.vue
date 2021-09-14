@@ -5,26 +5,23 @@
       <van-icon name="search" size="18" />
     </template>
   </top-nav-bar>
-  <van-button @click="onClick">唤起</van-button>
+  <van-button @click="onClick">唤起人脸识别</van-button>
   <div class="demo-container">
     <video
       id="video"
       ref="video"
       :width="winWidth"
-      :height="winHeight"
+      :height="400"
       style="border: 1px solid red"
       preload
       autoplay
       loop
       muted
     ></video>
-    <canvas
-      id="canvas"
-      ref="canvas"
-      :width="winWidth"
-      :height="winHeight"
-    ></canvas>
+    <canvas id="canvas" ref="canvas" :width="winWidth" :height="400"></canvas>
   </div>
+  <div>下面是你的鬼样子</div>
+  <canvas id="canvas2" ref="canvas2" :width="winWidth" :height="400"></canvas>
 </template>
 
 <script>
@@ -40,18 +37,27 @@ export default {
   },
   setup() {
     const count = ref(0);
-    const isdetected = ref("我来检测一下"); //检测结果提文字
+    const isdetected = ref("请您保持脸部在画面中央"); //检测结果提文字
     const winWidth = ref(window.innerWidth); //宽
     const winHeight = ref(window.innerHeight * 0.7); //高
     const video = ref(null); //video
     const canvas = ref(null); //canvas
     const context = ref();
-    let tracker;
+    const canvas2 = ref(null); //截图canvas
 
     // 停止监听
     const onStopTracking = () => {
       isdetected.value = "";
       context.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
+      const ctx = canvas2.value.getContext("2d");
+      ctx.drawImage(
+        video.value,
+        0,
+        0,
+        canvas2.value.width,
+        canvas2.value.height
+      ); //这里可以通过canvas生成图片base64 然后发送给后台
+      count.value = 0;
 
       video.value.pause();
       // 关闭摄像头
@@ -72,14 +78,9 @@ export default {
         context.value.font = "11px Helvetica";
         context.value.fillStyle = "#fff";
         context.value.fillText(
-          "x: " + rect.x + "px",
+          "正在检测中",
           rect.x + rect.width + 5,
           rect.y + 11
-        );
-        context.value.fillText(
-          "y: " + rect.y + "px",
-          rect.x + rect.width + 5,
-          rect.y + 22
         );
         if (event.data.length > 0 && count.value <= 20) {
           if (count.value < 0) {
@@ -103,7 +104,7 @@ export default {
 
     const onClick = () => {
       context.value = canvas.value.getContext("2d");
-      tracker = new tracking.ObjectTracker("face");
+      const tracker = new tracking.ObjectTracker("face");
       tracker.setInitialScale(4);
       tracker.setStepSize(2);
       tracker.setEdgesDensity(0.1);
@@ -131,8 +132,8 @@ export default {
 video {
   object-fit: fill;
 }
-video,
-canvas {
+#video,
+#canvas {
   position: absolute;
   left: 0;
   top: 0;
