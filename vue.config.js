@@ -3,7 +3,7 @@ const Random = Math.floor(Math.random() * 100);
 const port = 8080;
 
 module.exports = {
-  publicPath: "/",
+  publicPath: "./",
   outputDir: "dist",
   assetsDir: "static",
   lintOnSave: process.env.NODE_ENV === "development",
@@ -11,6 +11,7 @@ module.exports = {
   devServer: {
     port: port,
     open: true,
+    https: true,
     overlay: {
       warnings: false,
       errors: true
